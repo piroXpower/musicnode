@@ -50,12 +50,12 @@ async def init():
         pass
     await Anony.decorators()
     LOGGER("MahakMusic").info(
-        "✦ EDIT BY ➥ ROY EDITX...🐝"
+        "✦ EDIT BY ➥ RAVAN..🐝"
     )
     await idle()
     await app.stop()
     await userbot.stop()
-    LOGGER("MahakMusic").info("❖ Stopping AVISHA Music Bot...💌")
+    LOGGER("MahakMusic").info("❖ Stopping MAHAK Music Bot...💌")
 
 
 if __name__ == "__main__":
