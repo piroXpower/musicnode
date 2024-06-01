@@ -14,12 +14,12 @@ start_txt = """
 
 
 
-@app.on_message(filters.command("repo"))
+@app.on_message(filters.command("repourl"))
 async def start(_, msg):
     buttons = [
         [
-          InlineKeyboardButton("sᴜᴘᴘᴏʀᴛ", url="https://t.me/the_friendz"),
-          InlineKeyboardButton("ʀᴇᴘᴏ", url="https://github.com/LOCO-PILOT/ABC")
+          InlineKeyboardButton("sᴜᴘᴘᴏʀᴛ", url="https://t.me/Elric_xD"),
+          InlineKeyboardButton("ʀᴇᴘᴏ", url="https://github.com/piroXpower/musicnode/edit/master/MahakMusic")
           ],
     ]
     
