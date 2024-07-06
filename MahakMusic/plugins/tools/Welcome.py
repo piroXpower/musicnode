@@ -43,31 +43,35 @@ class temp:
 
 
 
-def circle(pfp, size=(500, 500)):
-    pfp = pfp.resize(size, Image.LANCZOS).convert("RGBA")
+def circle(pfp, size=(450, 450)):
+    pfp = pfp.resize(size, Image.ANTIALIAS).convert("RGBA")
     bigsize = (pfp.size[0] * 3, pfp.size[1] * 3)
     mask = Image.new("L", bigsize, 0)
     draw = ImageDraw.Draw(mask)
     draw.ellipse((0, 0) + bigsize, fill=255)
-    mask = mask.resize(pfp.size, Image.LANCZOS)
+    mask = mask.resize(pfp.size, Image.ANTIALIAS)
     mask = ImageChops.darker(mask, pfp.split()[-1])
     pfp.putalpha(mask)
     return pfp
 
-def welcomepic(pic, user, chatname, id, uname):
+def welcomepic(pic, user, chat, id, uname):
     background = Image.open("MahakMusic/assets/WELL2.PNG")
     pfp = Image.open(pic).convert("RGBA")
     pfp = circle(pfp)
-    pfp = pfp.resize((835, 839))
+    pfp = pfp.resize(
+        (605, 605)
+    ) 
     draw = ImageDraw.Draw(background)
-    font_large = ImageFont.truetype('MahakMusic/assets/font.ttf', size=65)
-    font_small = ImageFont.truetype('MahakMusic/assets/font.ttf', size=60)
-    draw.text((421, 715), f'{user}', fill=(242, 242, 242), font=font_large)
-    draw.text((270, 1005), f'{id}', fill=(242, 242, 242), font=font_large)
-    draw.text((570, 1308), f"{uname}", fill=(242, 242, 242), font=font_large)
-    pfp_position = (1887, 390)
-    background.paste(pfp, pfp_position, pfp)
-    background.save(f"downloads/welcome#{id}.png")
+    font = ImageFont.truetype('MahakMusic/assets/font.ttf', size=75)
+    font2 = ImageFont.truetype('MahakMusic/assets/font.ttf', size=90)
+    draw.text((150, 450), f'NAME : {unidecode(user)}', fill="black", font=font)
+    draw.text((150, 550), f'ID : {id}', fill="black", font=font)
+    draw.text((150, 650), f"USERNAME : {uname}", fill="black",font=font)
+    pfp_position = (1077, 183)  
+    background.paste(pfp, pfp_position, pfp)  
+    background.save(
+        f"downloads/welcome#{id}.png"
+    )
     return f"downloads/welcome#{id}.png"
 
 @app.on_message(filters.command("wel") & ~filters.private)
