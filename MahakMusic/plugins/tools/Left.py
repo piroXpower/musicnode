@@ -1,10 +1,47 @@
 from MahakMusic import app
-from pyrogram import Client, filters
 from pyrogram.errors import RPCError
-from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton
-from os import environ
+from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton, ChatJoinRequest
 from typing import Union, Optional
-from PIL import Image, ImageDraw, ImageFont
+from os import environ
+import random
+from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageChops
+from asyncio import sleep
+from pyrogram import filters, Client, enums
+from pyrogram.enums import ParseMode
+from pyrogram import *
+from pyrogram.types import *
+from logging import getLogger
+from MahakMusic.utils.blaze import admin_filter
+import os
+
+
+LOGGER = getLogger(__name__)
+
+class LeftDatabase:
+    def __init__(self):
+        self.data = {}
+
+    async def find_one(self, chat_id):
+        return chat_id in self.data
+
+    async def add_left(self, chat_id):
+        self.data[chat_id] = {"state": "off"}  # Default state is "off"
+
+    async def rm_left(self, chat_id):
+        if chat_id in self.data:
+            del self.data[chat_id]
+
+left = LeftDatabase()
+
+class temp:
+    ME = None
+    CURRENT = 2
+    CANCEL = False
+    MELCOW = {}
+    U_NAME = None
+    B_NAME = None
+
 
 EVAA = [
     [
@@ -58,8 +95,45 @@ font_path = "MahakMusic/assets/SwanseaBold-D0ox.ttf"
 # --------------------------------------------------------------------------------- #
 
 
+#command handler
+@app.on_message(filters.command("left") & ~filters.private)
+async def auto_state(_, message):
+    usage = "**Usage:**\n⦿/left [on|off]\n➤sɪᴛᴀʀᴀ sᴘᴇᴄɪᴀʟ ᴡᴇʟᴄᴏᴍᴇ.........."
+    if len(message.command) == 1:
+        return await message.reply_text(usage)
+    chat_id = message.chat.id
+    user = await app.get_chat_member(message.chat.id, message.from_user.id)
+    if user.status in (
+        enums.ChatMemberStatus.ADMINISTRATOR,
+        enums.ChatMemberStatus.OWNER,
+    ):
+        A = await left.find_one(chat_id)
+        state = message.text.split(None, 1)[1].strip().lower()
+        if state == "off":
+            if A:
+                await message.reply_text("**ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ᴀʟʀᴇᴀᴅʏ ᴅɪsᴀʙʟᴇᴅ !**")
+            else:
+                await left.add_left(chat_id)
+                await message.reply_text(f"**ᴅɪsᴀʙʟᴇᴅ  ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ɪɴ** {message.chat.title}")
+        elif state == "on":
+            if not A:
+                await message.reply_text("**ᴇɴᴀʙʟᴇ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ.**")
+            else:
+                await left.rm_left(chat_id)
+                await message.reply_text(f"**ᴇɴᴀʙʟᴇᴅ ᴡᴇʟᴄᴏᴍᴇ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ɪɴ ** {message.chat.title}")
+        else:
+            await message.reply_text(usage)
+    else:
+        await message.reply("**sᴏʀʀʏ ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ ᴇɴᴀʙʟᴇ ᴡᴇʟᴄᴏᴍᴇ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ!**")
+
+
 @app.on_chat_member_updated(filters.group, group=20)
 async def member_has_left(client: app, member: ChatMemberUpdated):
+
+#db source
+    A = await left.find_one(chat_id)
+    if A:
+        return
 
     if (
         not member.new_chat_member
