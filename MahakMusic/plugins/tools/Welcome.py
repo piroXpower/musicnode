@@ -1,3 +1,4 @@
+from unidecode import unidecode
 from MahakMusic import app
 from pyrogram.errors import RPCError
 from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton, ChatJoinRequest
