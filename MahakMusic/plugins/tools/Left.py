@@ -130,7 +130,8 @@ async def auto_state(_, message):
 
 @app.on_chat_member_updated(filters.group, group=20)
 async def member_has_left(client: app, member: ChatMemberUpdated):
-#db source
+#db source 
+    chat_id = member.chat.id
     A = await left.find_one(chat_id)
     if A:
         return
