@@ -13,6 +13,7 @@ from pyrogram import *
 from pyrogram.types import *
 from logging import getLogger
 from MahakMusic.utils.blaze import admin_filter
+from unidecode import unidecode
 import os
 
 
@@ -98,7 +99,7 @@ font_path = "MahakMusic/assets/SwanseaBold-D0ox.ttf"
 #command handler
 @app.on_message(filters.command("left") & ~filters.private)
 async def auto_state(_, message):
-    usage = "**Usage:**\n⦿/left [on|off]\n➤sɪᴛᴀʀᴀ sᴘᴇᴄɪᴀʟ ᴡᴇʟᴄᴏᴍᴇ.........."
+    usage = "**Usage:**\n⦿/left [on|off]\n➤sɪᴛᴀʀᴀ sᴘᴇᴄɪᴀʟ ʟᴇғᴛ.........."
     if len(message.command) == 1:
         return await message.reply_text(usage)
     chat_id = message.chat.id
@@ -111,30 +112,29 @@ async def auto_state(_, message):
         state = message.text.split(None, 1)[1].strip().lower()
         if state == "off":
             if A:
-                await message.reply_text("**ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ᴀʟʀᴇᴀᴅʏ ᴅɪsᴀʙʟᴇᴅ !**")
+                await message.reply_text("**ʟᴇғᴛ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ᴀʟʀᴇᴀᴅʏ ᴅɪsᴀʙʟᴇᴅ !**")
             else:
                 await left.add_left(chat_id)
-                await message.reply_text(f"**ᴅɪsᴀʙʟᴇᴅ  ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ɪɴ** {message.chat.title}")
+                await message.reply_text(f"**ᴅɪsᴀʙʟᴇᴅ ʟᴇғᴛ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ɪɴ** {message.chat.title}")
         elif state == "on":
             if not A:
-                await message.reply_text("**ᴇɴᴀʙʟᴇ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ.**")
+                await message.reply_text("**ᴇɴᴀʙʟᴇ ʟᴇғᴛ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ.**")
             else:
                 await left.rm_left(chat_id)
-                await message.reply_text(f"**ᴇɴᴀʙʟᴇᴅ ᴡᴇʟᴄᴏᴍᴇ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ɪɴ ** {message.chat.title}")
+                await message.reply_text(f"**ᴇɴᴀʙʟᴇᴅ ʟᴇғᴛ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ɪɴ ** {message.chat.title}")
         else:
             await message.reply_text(usage)
     else:
-        await message.reply("**sᴏʀʀʏ ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ ᴇɴᴀʙʟᴇ ᴡᴇʟᴄᴏᴍᴇ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ!**")
+        await message.reply("**sᴏʀʀʏ ᴏɴʟʏ ᴀᴅᴍɪɴs ᴄᴀɴ ᴇɴᴀʙʟᴇ ʟᴇғᴛ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ!**")
 
 
 @app.on_chat_member_updated(filters.group, group=20)
 async def member_has_left(client: app, member: ChatMemberUpdated):
-
 #db source
     A = await left.find_one(chat_id)
     if A:
         return
-
+         
     if (
         not member.new_chat_member
         and member.old_chat_member.status not in {
